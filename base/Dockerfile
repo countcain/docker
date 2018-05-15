@@ -9,7 +9,8 @@ RUN apt-get update && \
     curl \
     git \
     zsh \
-    vim
+    vim \
+    tmux
 
 RUN chsh -s /bin/zsh
 

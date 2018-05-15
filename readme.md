@@ -1,20 +1,8 @@
-1. ```docker-compose up``` to build images
-2. ```docker rm $(docker ps -aq)``` to delete all containers
-3. bootup containers
-    **nodejs**
-    ```shell
-    $ docker run \
-        --rm \
-        -v $(pwd)/base/.zprezto:/root/.zprezto \
-        -v $(pwd)/base/.zprezto/runcoms/zlogin:/root/.zlogin \
-        -v $(pwd)/base/.zprezto/runcoms/zlogout:/root/.zlogout \
-        -v $(pwd)/base/.zprezto/runcoms/zprofile:/root/.zprofile \
-        -v $(pwd)/base/.zprezto/runcoms/zshenv:/root/.zshenv \
-        -v $(pwd)/base/zpreztorc:/root/.zpreztorc \
-        -v $(pwd)/nodejs/zshrc:/root/.zshrc \
-        -v $(pwd)/nodejs/data:/root/data \
-        --name nodejs \
-        --network host \
-        -h $(hostname)-docker-nodejs \
-        -it tao-nodejs:1.0.0 /bin/zsh
-    ```
+# A Docker Tool for daily use
+> check shell.sh
+
+Once the images are built, all cli tools' versions in the images are fixed. But you can upgrade them in the containers run from the images. If containers get removed, all changes will be discarded. By default, this tool will not remove containers only if you do it manually.
+
+## Common commands
+* **Detach from a container** ```Ctrl + p```, ```Ctrl + q``` will turn interactive mode into daemon mode.
+* **Remove all containers** ```$ docker rm $(docker ps -aq)```

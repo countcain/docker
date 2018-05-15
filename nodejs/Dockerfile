@@ -1,4 +1,4 @@
-FROM       tao-base:1.0.0
+FROM       tao/base
 MAINTAINER Cain Huang <ch@mugic.org>
 
 # Install nvm and node

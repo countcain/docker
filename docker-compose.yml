@@ -1,7 +1,7 @@
 version: '3'
 services:
   base:
-    image: tao-base:1.0.0
+    image: tao/base
     container_name: tao-base
     build:
       context: ./base
@@ -9,7 +9,7 @@ services:
       - ./base:/root
     command: [/bin/zsh, setup.zsh]
   nodejs:
-    image: tao-nodejs:1.0.0
+    image: tao/nodejs
     container_name: tao-nodejs
     build:
       context: ./nodejs
