@@ -30,7 +30,6 @@ get*)
         -v $(pwd)/nodejs/zshrc:/root/.zshrc \
         -v $(pwd)/nodejs/data:/root/data \
         --name nodejs \
-        --network host \
         -h $(hostname)-docker-nodejs \
         -it tao/nodejs /bin/zsh
       ;;
@@ -56,10 +55,13 @@ get*)
         -v $(pwd)/base/.zprezto/runcoms/zshenv:/root/.zshenv \
         -v $(pwd)/base/zpreztorc:/root/.zpreztorc \
         -v $(pwd)/nginx/zshrc:/root/.zshrc \
-        -v $(pwd)/nginx/nginx.conf:/etc/nginx/nginx.conf \
         -v $(pwd)/nginx/data:/root/data \
+        -v $(pwd)/nginx/data/nginx.conf:/etc/nginx/nginx.conf \
+        -v $(pwd)/nginx/data/letsencrypt:/etc/letsencrypt \
+        -v $(pwd)/nginx/data/log:/var/log/nginx \
         --name nginx \
-        --network host \
+        -p 80:80 \
+        -p 443:443 \
         -h $(hostname)-docker-nginx \
         -it tao/nginx /bin/zsh
       ;;

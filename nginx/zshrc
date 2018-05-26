@@ -9,3 +9,9 @@
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
+
+function get_cert {
+    certbot certonly --webroot -w /var/www/html/ -d $1
+}
+
+alias gcert='get_cert'
