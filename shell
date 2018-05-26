@@ -36,9 +36,39 @@ get*)
       ;;
     esac
     ;;
+  nginx*)
+    status=$(docker container inspect --format='{{.State.Status}}' nginx)
+    case $status in
+    exited*)
+      docker start -i nginx
+      ;;
+    running*)
+      docker exec -it nginx /bin/zsh
+      ;;
+    *)
+      docker run \
+        -v $(pwd)/base/.vim:/root/.vim \
+        -v $(pwd)/base/vimrc:/root/.vimrc \
+        -v $(pwd)/base/.zprezto:/root/.zprezto \
+        -v $(pwd)/base/.zprezto/runcoms/zlogin:/root/.zlogin \
+        -v $(pwd)/base/.zprezto/runcoms/zlogout:/root/.zlogout \
+        -v $(pwd)/base/.zprezto/runcoms/zprofile:/root/.zprofile \
+        -v $(pwd)/base/.zprezto/runcoms/zshenv:/root/.zshenv \
+        -v $(pwd)/base/zpreztorc:/root/.zpreztorc \
+        -v $(pwd)/nginx/zshrc:/root/.zshrc \
+        -v $(pwd)/nginx/nginx.conf:/etc/nginx/nginx.conf \
+        -v $(pwd)/nginx/data:/root/data \
+        --name nginx \
+        --network host \
+        -h $(hostname)-docker-nginx \
+        -it tao/nginx /bin/zsh
+      ;;
+    esac
+    ;;
   *)
     echo "You must specify a container: $ ./shell.sh get [option]"
     echo "     nodejs - get the node.js container"
+    echo "     nginx  - get the nginx container"
     ;;
   esac
   ;;

@@ -5,12 +5,11 @@ MAINTAINER Cain Huang <ch@mugic.org>
 RUN apt-get update && \
     apt-get -y upgrade && \
     apt-get install -y \
-    gnupg \
     curl \
-    git \
     zsh \
     vim \
-    tmux
+    git \
+    software-properties-common
 
 RUN chsh -s /bin/zsh
 

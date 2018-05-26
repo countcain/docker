@@ -2,4 +2,5 @@ base/.zprezto
 base/.vim/bundle
 base/.viminfo
 .idea
-*/data
+nginx/nginx*.conf
+!nginx/nginx-example.conf

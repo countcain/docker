@@ -13,3 +13,8 @@ services:
     container_name: tao-nodejs
     build:
       context: ./nodejs
+  nginx:
+    image: tao/nginx
+    container_name: tao-nginx
+    build:
+      context: ./nginx
