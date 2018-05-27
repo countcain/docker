@@ -18,6 +18,10 @@ build*)
     echo "influxdb config file not found"
     exit
   fi
+  if [ ! -f "$(pwd)/grafana/data/env" ]; then
+    echo "grafana env file not found"
+    exit
+  fi
   docker-compose up -d
   docker rm $(docker ps -aq)
   ;;
@@ -92,11 +96,15 @@ get*)
   influxdb*)
     docker exec -it influxdb influx
     ;;
+  grafana*)
+    docker exec -it grafana /bin/bash
+    ;;
   *)
     echo "You must specify a container: $ ./shell.sh get [option]"
-    echo "     nodejs   - get the node.js container"
     echo "     nginx    - get the nginx container"
     echo "     redis    - get the redis container"
+    echo "     nodejs   - get the node.js container"
+    echo "     grafana  - get the Grafana container"
     echo "     postgres - get the PostgreSQL container"
     echo "     influxdb - get the InfluxDB container"
     ;;

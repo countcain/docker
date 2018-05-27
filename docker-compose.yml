@@ -50,6 +50,17 @@ services:
       - ./influxdb/data/persist:/var/lib/influxdb
       - ./influxdb/data/influxdb.conf:/etc/influxdb/influxdb.conf
     command: [influxd, -config, /etc/influxdb/influxdb.conf]
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    user: '472'
+    env_file:
+      - ./grafana/data/env
+    ports:
+      - '3456:3000'
+    volumes:
+      - ./grafana/data/persist:/var/lib/grafana
 secrets:
   postgres_password:
     file: ./postgresql/data/password
