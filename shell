@@ -14,6 +14,10 @@ build*)
     echo "redis config file not found"
     exit
   fi
+  if [ ! -f "$(pwd)/influxdb/data/influxdb.conf" ]; then
+    echo "influxdb config file not found"
+    exit
+  fi
   docker-compose up -d
   docker rm $(docker ps -aq)
   ;;
@@ -85,12 +89,16 @@ get*)
   redis*)
     docker exec -it redis redis-cli
     ;;
+  influxdb*)
+    docker exec -it influxdb influx
+    ;;
   *)
     echo "You must specify a container: $ ./shell.sh get [option]"
     echo "     nodejs   - get the node.js container"
     echo "     nginx    - get the nginx container"
     echo "     redis    - get the redis container"
     echo "     postgres - get the PostgreSQL container"
+    echo "     influxdb - get the InfluxDB container"
     ;;
   esac
   ;;

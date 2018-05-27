@@ -40,6 +40,16 @@ services:
       - postgres_password
     volumes:
       - ./postgresql/data/pgdata:/var/lib/postgresql/data
+  influxdb:
+    image: influxdb
+    container_name: influxdb
+    restart: always
+    ports:
+      - '8086:8086'
+    volumes:
+      - ./influxdb/data/persist:/var/lib/influxdb
+      - ./influxdb/data/influxdb.conf:/etc/influxdb/influxdb.conf
+    command: [influxd, -config, /etc/influxdb/influxdb.conf]
 secrets:
   postgres_password:
     file: ./postgresql/data/password
