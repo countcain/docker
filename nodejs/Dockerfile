@@ -24,3 +24,5 @@ RUN . $NVM_DIR/nvm.sh && \
     yarn global add pm2
 
 WORKDIR /root
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]

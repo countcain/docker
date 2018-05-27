@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 case $1 in
-build*)
+up*)
   if [ ! -f "$(pwd)/postgresql/data/password" ]; then
     echo "postgreqls password file not found"
     exit
@@ -23,69 +23,19 @@ build*)
     exit
   fi
   docker-compose up -d
-  docker rm $(docker ps -aq)
+  docker rm tao-base
+  ;;
+down*)
+  docker-compose down
   ;;
 get*)
   case $2 in
   nodejs*)
-    status=$(docker container inspect --format='{{.State.Status}}' nodejs)
-    case $status in
-    exited*)
-      docker start -i nodejs
-      ;;
-    running*)
-      docker exec -it nodejs /bin/zsh
-      ;;
-    *)
-      docker run \
-        -v $(pwd)/base/tmux.conf:/root/.tmux.conf \
-        -v $(pwd)/base/.vim:/root/.vim \
-        -v $(pwd)/base/vimrc:/root/.vimrc \
-        -v $(pwd)/base/.zprezto:/root/.zprezto \
-        -v $(pwd)/base/.zprezto/runcoms/zlogin:/root/.zlogin \
-        -v $(pwd)/base/.zprezto/runcoms/zlogout:/root/.zlogout \
-        -v $(pwd)/base/.zprezto/runcoms/zprofile:/root/.zprofile \
-        -v $(pwd)/base/.zprezto/runcoms/zshenv:/root/.zshenv \
-        -v $(pwd)/base/zpreztorc:/root/.zpreztorc \
-        -v $(pwd)/nodejs/zshrc:/root/.zshrc \
-        -v $(pwd)/nodejs/data:/root/data \
-        --name nodejs \
-        -h $(hostname)-docker-nodejs \
-        -it tao/nodejs /bin/zsh
-      ;;
-    esac
+    # status=$(docker container inspect --format='{{.State.Status}}' nodejs)
+    docker exec -it nodejs /bin/zsh
     ;;
   nginx*)
-    status=$(docker container inspect --format='{{.State.Status}}' nginx)
-    case $status in
-    exited*)
-      docker start -i nginx
-      ;;
-    running*)
-      docker exec -it nginx /bin/zsh
-      ;;
-    *)
-      docker run \
-        -v $(pwd)/base/.vim:/root/.vim \
-        -v $(pwd)/base/vimrc:/root/.vimrc \
-        -v $(pwd)/base/.zprezto:/root/.zprezto \
-        -v $(pwd)/base/.zprezto/runcoms/zlogin:/root/.zlogin \
-        -v $(pwd)/base/.zprezto/runcoms/zlogout:/root/.zlogout \
-        -v $(pwd)/base/.zprezto/runcoms/zprofile:/root/.zprofile \
-        -v $(pwd)/base/.zprezto/runcoms/zshenv:/root/.zshenv \
-        -v $(pwd)/base/zpreztorc:/root/.zpreztorc \
-        -v $(pwd)/nginx/zshrc:/root/.zshrc \
-        -v $(pwd)/nginx/data:/root/data \
-        -v $(pwd)/nginx/data/nginx.conf:/etc/nginx/nginx.conf \
-        -v $(pwd)/nginx/data/letsencrypt:/etc/letsencrypt \
-        -v $(pwd)/nginx/data/log:/var/log/nginx \
-        --name nginx \
-        -p 80:80 \
-        -p 443:443 \
-        -h $(hostname)-docker-nginx \
-        -it tao/nginx /bin/zsh
-      ;;
-    esac
+    docker exec -it nginx /bin/zsh
     ;;
   postgres*)
     docker exec -it postgres psql -U postgres
@@ -112,7 +62,8 @@ get*)
   ;;
 *)
   echo "You must specify an option: $ ./shell.sh [option]"
-  echo "     build  - build the images."
+  echo "     up     - up all services"
+  echo "     down   - down all services"
   echo "     get    - get me a container"
   ;;
 esac

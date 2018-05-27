@@ -10,3 +10,5 @@ RUN apt-get update && \
     nginx
 
 WORKDIR /root
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]

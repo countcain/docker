@@ -11,13 +11,45 @@ services:
   nodejs:
     image: tao/nodejs
     container_name: nodejs
+    hostname: nodejs
     build:
       context: ./nodejs
+    volumes:
+      - ./base/tmux.conf:/root/.tmux.conf
+      - ./base/.vim:/root/.vim
+      - ./base/vimrc:/root/.vimrc
+      - ./base/.zprezto:/root/.zprezto
+      - ./base/.zprezto/runcoms/zlogin:/root/.zlogin
+      - ./base/.zprezto/runcoms/zlogout:/root/.zlogout
+      - ./base/.zprezto/runcoms/zprofile:/root/.zprofile
+      - ./base/.zprezto/runcoms/zshenv:/root/.zshenv
+      - ./base/zpreztorc:/root/.zpreztorc
+      - ./nodejs/zshrc:/root/.zshrc
+      - ./nodejs/data:/root/data
   nginx:
     image: tao/nginx
     container_name: nginx
+    hostname: nginx
     build:
       context: ./nginx
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./base/.vim:/root/.vim
+      - ./base/vimrc:/root/.vimrc
+      - ./base/.zprezto:/root/.zprezto
+      - ./base/.zprezto/runcoms/zlogin:/root/.zlogin
+      - ./base/.zprezto/runcoms/zlogout:/root/.zlogout
+      - ./base/.zprezto/runcoms/zprofile:/root/.zprofile
+      - ./base/.zprezto/runcoms/zshenv:/root/.zshenv
+      - ./base/zpreztorc:/root/.zpreztorc
+      - ./nginx/zshrc:/root/.zshrc
+      - ./nginx/data:/root/data
+      - ./nginx/data/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/data/letsencrypt:/etc/letsencrypt
+      - ./nginx/data/log:/var/log/nginx
+    command: [service, nginx, start]
   redis:
     image: redis
     container_name: redis
