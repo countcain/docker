@@ -1,4 +1,4 @@
-version: '3'
+version: '3.1'
 services:
   base:
     image: tao/base
@@ -10,11 +10,26 @@ services:
     command: [/bin/zsh, setup.zsh]
   nodejs:
     image: tao/nodejs
-    container_name: tao-nodejs
+    container_name: nodejs
     build:
       context: ./nodejs
   nginx:
     image: tao/nginx
-    container_name: tao-nginx
+    container_name: nginx
     build:
       context: ./nginx
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    ports:
+      - '5432:5432'
+    secrets:
+      - postgres_password
+    volumes:
+      - ./postgresql/data/pgdata:/var/lib/postgresql/data
+secrets:
+  postgres_password:
+    file: ./postgresql/data/password

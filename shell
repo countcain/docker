@@ -2,7 +2,15 @@
 
 case $1 in
 build*)
-  docker-compose up
+  if [ ! -f "$(pwd)/postgresql/data/password" ]; then
+    echo "postgreqls password file not found"
+    exit
+  fi
+  if [ ! -f "$(pwd)/nginx/data/nginx.conf" ]; then
+    echo "nginx config file not found"
+    exit
+  fi
+  docker-compose up -d
   docker rm $(docker ps -aq)
   ;;
 get*)
@@ -67,10 +75,14 @@ get*)
       ;;
     esac
     ;;
+  postgres*)
+    docker exec -it postgres psql -U postgres
+    ;;
   *)
     echo "You must specify a container: $ ./shell.sh get [option]"
-    echo "     nodejs - get the node.js container"
-    echo "     nginx  - get the nginx container"
+    echo "     nodejs   - get the node.js container"
+    echo "     nginx    - get the nginx container"
+    echo "     postgres - get the PostgreSQL container"
     ;;
   esac
   ;;
