@@ -10,6 +10,10 @@ build*)
     echo "nginx config file not found"
     exit
   fi
+  if [ ! -f "$(pwd)/redis/data/redis.conf" ]; then
+    echo "redis config file not found"
+    exit
+  fi
   docker-compose up -d
   docker rm $(docker ps -aq)
   ;;
@@ -78,10 +82,14 @@ get*)
   postgres*)
     docker exec -it postgres psql -U postgres
     ;;
+  redis*)
+    docker exec -it redis redis-cli
+    ;;
   *)
     echo "You must specify a container: $ ./shell.sh get [option]"
     echo "     nodejs   - get the node.js container"
     echo "     nginx    - get the nginx container"
+    echo "     redis    - get the redis container"
     echo "     postgres - get the PostgreSQL container"
     ;;
   esac

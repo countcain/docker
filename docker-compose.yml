@@ -18,6 +18,16 @@ services:
     container_name: nginx
     build:
       context: ./nginx
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./redis/data/persist:/data
+      - ./redis/data/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [redis-server, /usr/local/etc/redis/redis.conf]
   postgres:
     image: postgres
     container_name: postgres
