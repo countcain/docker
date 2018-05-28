@@ -1,15 +1,7 @@
-if [ -d "${ZDOTDIR:-$HOME}/.zprezto" ]; then
-  echo 'zprezto exist'
-  rm -rf "${ZDOTDIR:-$HOME}/.zprezto"
-else
-  git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-fi
+rm -rf "${ZDOTDIR:-$HOME}/.zprezto"
+git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
 
+rm -rf "$HOME/.vim"
 mkdir -p "$HOME/.vim"
 mkdir -p "$HOME/.vim/bundle"
-if [ -d "$HOME/.vim/bundle/Vundle.vim" ]; then
-  echo 'vundle exist'
-  rm -rf "${ZDOTDIR:-$HOME}/.zprezto"
-else
-  git clone https://github.com/VundleVim/Vundle.vim.git "$HOME/.vim/bundle/Vundle.vim"
-fi
+git clone https://github.com/VundleVim/Vundle.vim.git "$HOME/.vim/bundle/Vundle.vim"
