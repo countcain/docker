@@ -32,7 +32,7 @@ get*)
   case $2 in
   nodejs*)
     # status=$(docker container inspect --format='{{.State.Status}}' nodejs)
-    docker exec -it nodejs /bin/zsh
+    docker exec -it nodejs /bin/zsh -c "stty cols 318 && stty rows 67 && /bin/zsh"
     ;;
   nginx*)
     docker exec -it nginx /bin/zsh
