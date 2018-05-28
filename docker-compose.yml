@@ -12,6 +12,7 @@ services:
     image: tao/nodejs
     container_name: nodejs
     hostname: nodejs
+    user: root
     build:
       context: ./nodejs
     volumes:
@@ -30,6 +31,7 @@ services:
     image: tao/nginx
     container_name: nginx
     hostname: nginx
+    user: root
     build:
       context: ./nginx
     ports:
