@@ -23,7 +23,6 @@ up*)
     exit
   fi
   docker-compose up -d
-  docker rm tao-base
   ;;
 down*)
   docker-compose down
