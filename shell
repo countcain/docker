@@ -22,7 +22,21 @@ up*)
     echo "grafana env file not found"
     exit
   fi
+
+  if [ -d "$(pwd)/base/.zprezto" ]; then
+    echo 'zprezto exist'
+  else
+    git clone --recursive https://github.com/sorin-ionescu/prezto.git "$(pwd)/base/.zprezto"
+  fi
+  mkdir -p "$(pwd)/base/.vim"
+  mkdir -p "$(pwd)/base/.vim/bundle"
+  if [ -d "$(pwd)/base/.vim/bundle/Vundle.vim" ]; then
+    echo 'vundle exist'
+  else
+    git clone https://github.com/VundleVim/Vundle.vim.git "$(pwd)/base/.vim/bundle/Vundle.vim"
+  fi
   docker-compose up -d
+  docker rm -f tao-base
   ;;
 down*)
   docker-compose down
