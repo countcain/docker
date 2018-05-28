@@ -86,7 +86,7 @@ services:
     image: grafana/grafana
     container_name: grafana
     restart: always
-    user: '472'
+    user: root
     env_file:
       - ./grafana/data/env
     ports:
