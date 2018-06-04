@@ -29,6 +29,7 @@ services:
       - ./app/data/cargo:/root/.cargo
       - ./app/data/rustup:/root/.rustup
       - ./app/data:/root/data
+      - ./ssh:/root/ssh
   nginx:
     image: tao/nginx
     container_name: nginx
