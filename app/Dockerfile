@@ -1,12 +1,13 @@
 FROM       tao/base
 MAINTAINER Cain Huang <ch@mugic.org>
 
-# Install nvm and node
+RUN add-apt-repository ppa:gophers/archive
 RUN apt-get update && \
     apt-get -y upgrade && \
     apt-get install -y \
     gnupg \
-    tmux
+    tmux \
+    golang-1.10-go
 
 RUN mkdir -p /usr/local/nvm
 ENV NVM_DIR /usr/local/nvm

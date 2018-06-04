@@ -8,13 +8,13 @@ services:
       context: ./base
     volumes:
       - ./base:/root
-  nodejs:
-    image: tao/nodejs
-    container_name: nodejs
-    hostname: nodejs
+  app:
+    image: tao/app
+    container_name: app
+    hostname: app
     user: root
     build:
-      context: ./nodejs
+      context: ./app
     volumes:
       - ./base/tmux.conf:/root/.tmux.conf
       - ./base/.vim:/root/.vim
@@ -25,8 +25,10 @@ services:
       - ./base/.zprezto/runcoms/zprofile:/root/.zprofile
       - ./base/.zprezto/runcoms/zshenv:/root/.zshenv
       - ./base/zpreztorc:/root/.zpreztorc
-      - ./nodejs/zshrc:/root/.zshrc
-      - ./nodejs/data:/root/data
+      - ./app/zshrc:/root/.zshrc
+      - ./app/data/cargo:/root/.cargo
+      - ./app/data/rustup:/root/.rustup
+      - ./app/data:/root/data
   nginx:
     image: tao/nginx
     container_name: nginx
