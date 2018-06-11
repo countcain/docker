@@ -11,6 +11,7 @@ Plugin 'dracula/vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'isRuslan/vim-es6'
+Plugin 'fatih/vim-go'
 
 call vundle#end()
 filetype plugin indent on
