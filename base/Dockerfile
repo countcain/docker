@@ -9,7 +9,9 @@ RUN apt-get update && \
     zsh \
     vim \
     git \
-    software-properties-common
+    software-properties-common \
+    net-tools \
+    iproute2
 
 RUN chsh -s /bin/zsh
 

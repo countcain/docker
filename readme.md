@@ -6,3 +6,4 @@ Once the images are built, all cli tools' versions in the images are fixed. But 
 ## Common docker commands
 * **Detach from a container** ```Ctrl + p```, ```Ctrl + q``` will turn interactive mode into daemon mode.
 * **Remove all containers** ```$ docker rm $(docker ps -aq)```
+* **Get docker host from within a docker container** ```$linux ip route | awk 'NR==1 {print $3}'``` ```$mac host.docker.internal```
