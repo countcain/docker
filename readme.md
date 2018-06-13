@@ -7,3 +7,5 @@ Once the images are built, all cli tools' versions in the images are fixed. But 
 * **Detach from a container** ```Ctrl + p```, ```Ctrl + q``` will turn interactive mode into daemon mode.
 * **Remove all containers** ```$ docker rm $(docker ps -aq)```
 * **Get docker host from within a docker container** ```$linux ip route | awk 'NR==1 {print $3}'``` ```$mac host.docker.internal```
+* **launch ssh agent in background inside docker container** ```$ eval "$(ssh-agent -s)"```
+* **add private key** ```$ ssh-add -K ~/ssh/youKey```
