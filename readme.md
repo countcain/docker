@@ -8,4 +8,4 @@ Once the images are built, all cli tools' versions in the images are fixed. But 
 * **Remove all containers** ```$ docker rm $(docker ps -aq)```
 * **Get docker host from within a docker container** ```$linux ip route | awk 'NR==1 {print $3}'``` ```$mac host.docker.internal```
 * **launch ssh agent in background inside docker container** ```$ eval "$(ssh-agent -s)"```
-* **add private key** ```$ ssh-add -K ~/ssh/youKey```
+* **add private key** ```$ ssh-add -k ~/ssh/youKey```
