@@ -45,10 +45,10 @@ get*)
   case $2 in
   app*)
     # status=$(docker container inspect --format='{{.State.Status}}' app)
-    docker exec -it app /bin/zsh -c "stty cols $(tput cols) && stty rows $(tput lines) && /bin/zsh"
+    docker exec -it app /bin/zsh -c "TERM=xterm-256color && stty cols $(tput cols) && stty rows $(tput lines) && /bin/zsh"
     ;;
   nginx*)
-    docker exec -it nginx /bin/zsh -c "stty cols $(tput cols) && stty rows $(tput lines) && /bin/zsh"
+    docker exec -it nginx /bin/zsh -c "TERM=xterm-256color && stty cols $(tput cols) && stty rows $(tput lines) && /bin/zsh"
     ;;
   postgres*)
     docker exec -it postgres psql -U postgres
