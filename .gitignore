@@ -2,3 +2,4 @@ base/.zprezto
 base/.vim/bundle
 base/.viminfo
 .idea
+*.swp
