@@ -1,4 +1,4 @@
-FROM       tao/base
+FROM       tao/base:v1
 MAINTAINER Cain Huang <ch@mugic.org>
 
 RUN add-apt-repository ppa:gophers/archive
@@ -28,5 +28,3 @@ RUN . $NVM_DIR/nvm.sh && \
     yarn global add pm2
 
 WORKDIR /root
-
-ENTRYPOINT ["tail", "-f", "/dev/null"]

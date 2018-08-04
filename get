@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+
+# prezto
+if [ ! -d "$(pwd)/base/.zprezto" ]; then
+  git clone --recursive https://github.com/sorin-ionescu/prezto.git "$(pwd)/base/.zprezto"
+fi
+
+# vundle
+mkdir -p "$(pwd)/base/.vim"
+mkdir -p "$(pwd)/base/.vim/bundle"
+if [ ! -d "$(pwd)/base/.vim/bundle/Vundle.vim" ]; then
+  git clone https://github.com/VundleVim/Vundle.vim.git "$(pwd)/base/.vim/bundle/Vundle.vim"
+fi
+
+# base image
+if [ -z "$(docker image inspect --format='{{.Id}}' tao/base:v1)" ]; then
+  docker build -t tao/base:v1 ./base
+fi
+
+# tao network
+if [ -z "$(docker network inspect --format='{{.Id}}' tao)" ]; then
+  docker network create tao
+fi
+
+case $1 in
+app*)
+  if [ -z "$(docker image inspect --format='{{.Id}}' tao/app:v1)" ]; then
+    docker build -t tao/app:v1 ./app
+  fi
+  tao_app_container_status=$(docker container inspect --format='{{.State.Status}}' tao-app)
+  if [ -z "$tao_app_container_status" ]; then
+    docker run \
+      --name tao-app \
+      --network tao \
+      -v $(pwd)/base/tmux.conf:/root/.tmux.conf \
+      -v $(pwd)/base/.vim:/root/.vim \
+      -v $(pwd)/base/vimrc:/root/.vimrc \
+      -v $(pwd)/base/.zprezto:/root/.zprezto \
+      -v $(pwd)/base/.zprezto/runcoms/zlogin:/root/.zlogin \
+      -v $(pwd)/base/.zprezto/runcoms/zlogout:/root/.zlogout \
+      -v $(pwd)/base/.zprezto/runcoms/zprofile:/root/.zprofile \
+      -v $(pwd)/base/.zprezto/runcoms/zshenv:/root/.zshenv \
+      -v $(pwd)/base/zpreztorc:/root/.zpreztorc \
+      -v $(pwd)/app/zshrc:/root/.zshrc \
+      -v $(pwd)/app/data/cargo:/root/.cargo \
+      -v $(pwd)/app/data/rustup:/root/.rustup \
+      -v $(pwd)/app/data:/root/data \
+      -v $(pwd)/ssh:/root/ssh \
+      -h app_tao_docker@$(hostname) \
+      -d tao/app:v1
+  elif [ "$tao_app_container_status" = "exited" ]; then
+    docker start tao-app
+  fi
+  docker exec \
+    -e TERM=xterm-256color \
+    -e COLUMNS=$(tput cols) \
+    -e LINES=$(tput lines) \
+    -it tao-app /bin/zsh
+  ;;
+nginx*)
+  if [ -z "$(docker image inspect --format='{{.Id}}' tao/nginx:v1)" ]; then
+    docker build -t tao/nginx:v1 ./nginx
+  fi
+  tao_nginx_container_status=$(docker container inspect --format='{{.State.Status}}' tao-nginx)
+  if [ -z "$tao_nginx_container_status" ]; then
+    docker run \
+      --name tao-nginx \
+      --network tao \
+      -v $(pwd)/base/.vim:/root/.vim \
+      -v $(pwd)/base/vimrc:/root/.vimrc \
+      -v $(pwd)/base/.zprezto:/root/.zprezto \
+      -v $(pwd)/base/.zprezto/runcoms/zlogin:/root/.zlogin \
+      -v $(pwd)/base/.zprezto/runcoms/zlogout:/root/.zlogout \
+      -v $(pwd)/base/.zprezto/runcoms/zprofile:/root/.zprofile \
+      -v $(pwd)/base/.zprezto/runcoms/zshenv:/root/.zshenv \
+      -v $(pwd)/base/zpreztorc:/root/.zpreztorc \
+      -v $(pwd)/nginx/zshrc:/root/.zshrc \
+      -v $(pwd)/nginx/data:/root/data \
+      -v $(pwd)/nginx/data/nginx.conf:/etc/nginx/nginx.conf \
+      -v $(pwd)/nginx/data/letsencrypt:/etc/letsencrypt \
+      -v $(pwd)/nginx/data/log:/var/log/nginx \
+      -p 80:80 \
+      -p 443:443 \
+      -h nginx_tao_docker@$(hostname) \
+      -d tao/nginx:v1
+  elif [ "$tao_nginx_container_status" = "exited" ]; then
+    docker start tao-nginx
+  fi
+  docker exec \
+    -e TERM=xterm-256color \
+    -e COLUMNS=$(tput cols) \
+    -e LINES=$(tput lines) \
+    -it tao-nginx /bin/zsh
+  ;;
+redis*)
+  docker exec -it redis redis-cli
+  ;;
+influxdb*)
+  docker exec -it influxdb influx
+  ;;
+grafana*)
+  docker exec -it grafana /bin/bash
+  ;;
+postgres*)
+  docker exec -it postgres psql -U postgres
+  ;;
+*)
+  echo "You must specify a container: $ ./get [option]"
+  echo "  nginx    - get the nginx container"
+  echo "  redis    - get the redis container"
+  echo "  app      - get the app container"
+  echo "  grafana  - get the Grafana container"
+  echo "  postgres - get the PostgreSQL container"
+  echo "  influxdb - get the InfluxDB container"
+  ;;
+esac
