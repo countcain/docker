@@ -47,7 +47,7 @@ app*)
       -v $(pwd)/app/data:/root/data \
       -v $(pwd)/ssh:/root/ssh \
       -h app_tao_docker@$(hostname) \
-      -d tao/app:v1
+      -dt tao/app:v1
   elif [ "$tao_app_container_status" = "exited" ]; then
     docker start tao-app
   fi
@@ -82,7 +82,7 @@ nginx*)
       -p 80:80 \
       -p 443:443 \
       -h nginx_tao_docker@$(hostname) \
-      -d tao/nginx:v1
+      -dt tao/nginx:v1
   elif [ "$tao_nginx_container_status" = "exited" ]; then
     docker start tao-nginx
   fi
