@@ -32,6 +32,7 @@ app*)
     docker run \
       --name tao-app \
       --network tao \
+      -u root \
       -v $(pwd)/base/tmux.conf:/root/.tmux.conf \
       -v $(pwd)/base/.vim:/root/.vim \
       -v $(pwd)/base/vimrc:/root/.vimrc \
@@ -61,11 +62,16 @@ nginx*)
   if [ -z "$(docker image inspect --format='{{.Id}}' tao/nginx:v1)" ]; then
     docker build -t tao/nginx:v1 ./nginx
   fi
+  if [ ! -f "$(pwd)/nginx/data/nginx.conf" ]; then
+    echo "nginx config file not found"
+    exit
+  fi
   tao_nginx_container_status=$(docker container inspect --format='{{.State.Status}}' tao-nginx)
   if [ -z "$tao_nginx_container_status" ]; then
     docker run \
       --name tao-nginx \
       --network tao \
+      -u root \
       -v $(pwd)/base/.vim:/root/.vim \
       -v $(pwd)/base/vimrc:/root/.vimrc \
       -v $(pwd)/base/.zprezto:/root/.zprezto \
@@ -93,16 +99,21 @@ nginx*)
     -it tao-nginx /bin/zsh
   ;;
 redis*)
+  if [ ! -f "$(pwd)/redis/data/redis.conf" ]; then
+    echo "redis config file not found"
+    exit
+  fi
   redis_container_status=$(docker container inspect --format='{{.State.Status}}' redis)
   if [ -z "$redis_container_status" ]; then
     docker run \
       --name redis \
       --network tao \
+      --restart always \
       -v $(pwd)/redis/data/persist:/data \
       -v $(pwd)/redis/data/redis.conf:/usr/local/etc/redis/redis.conf \
       -p 6379:6379 \
       -h redis_docker@$(hostname) \
-      -dt redis redis-server /usr/local/etc/redis/redis.conf
+      -d redis redis-server /usr/local/etc/redis/redis.conf
   elif [ "$redis_container_status" = "exited" ]; then
     docker start redis
   fi
@@ -113,13 +124,74 @@ redis*)
     -it redis redis-cli
   ;;
 influxdb*)
-  docker exec -it influxdb influx
+  if [ ! -f "$(pwd)/influxdb/data/influxdb.conf" ]; then
+    echo "influxdb config file not found"
+    exit
+  fi
+  influxdb_container_status=$(docker container inspect --format='{{.State.Status}}' influxdb)
+  if [ -z "$influxdb_container_status" ]; then
+    docker run \
+      --name influxdb \
+      --network tao \
+      --restart always \
+      -v $(pwd)/influxdb/data/persist:/var/lib/influxdb \
+      -v $(pwd)/influxdb/data/influxdb.conf:/etc/influxdb/influxdb.conf \
+      -p 8086:8086 \
+      -p 2003:2003 \
+      -h influxdb_docker@$(hostname) \
+      -d influxdb -config /etc/influxdb/influxdb.conf
+  elif [ "$influxdb_container_status" = "exited" ]; then
+    docker start influxdb
+  fi
+  docker exec \
+    -e TERM=xterm-256color \
+    -e COLUMNS=$(tput cols) \
+    -e LINES=$(tput lines) \
+    -it influxdb influx
   ;;
 grafana*)
-  docker exec -it grafana /bin/bash
+  grafana_container_status=$(docker container inspect --format='{{.State.Status}}' grafana)
+  if [ -z "$grafana_container_status" ]; then
+    docker run \
+      --name grafana \
+      --network tao \
+      --restart always \
+      -u root \
+      -v $(pwd)/grafana/data/persist:/var/lib/grafana
+      -p 3456:3000 \
+      -h grafana_docker@$(hostname) \
+      -e "GF_SERVER_ROOT_URL=http://your.domain.name" \
+      -e "GF_SECURITY_ADMIN_PASSWORD=secret" \
+      -d grafana/grafana
+  elif [ "$grafana_container_status" = "exited" ]; then
+    docker start grafana
+  fi
+  docker exec \
+    -e TERM=xterm-256color \
+    -e COLUMNS=$(tput cols) \
+    -e LINES=$(tput lines) \
+    -it grafana /bin/bash
   ;;
 postgres*)
-  docker exec -it postgres psql -U postgres
+  postgres_container_status=$(docker container inspect --format='{{.State.Status}}' postgres)
+  if [ -z "$postgres_container_status" ]; then
+    docker run \
+      --name postgres \
+      --network tao \
+      --restart always \
+      -v $(pwd)/postgresql/data/persist:/var/lib/postgresql/data
+      -p 5432:5432 \
+      -h postgres_docker@$(hostname) \
+      -e "POSTGRES_PASSWORD=secret"
+      -d postgres
+  elif [ "$postgres_container_status" = "exited" ]; then
+    docker start postgres
+  fi
+  docker exec \
+    -e TERM=xterm-256color \
+    -e COLUMNS=$(tput cols) \
+    -e LINES=$(tput lines) \
+    -it postgres psql -U postgres
   ;;
 *)
   echo "You must specify a container: $ ./get [option]"
