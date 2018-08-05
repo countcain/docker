@@ -93,7 +93,24 @@ nginx*)
     -it tao-nginx /bin/zsh
   ;;
 redis*)
-  docker exec -it redis redis-cli
+  redis_container_status=$(docker container inspect --format='{{.State.Status}}' redis)
+  if [ -z "$redis_container_status" ]; then
+    docker run \
+      --name redis \
+      --network tao \
+      -v $(pwd)/redis/data/persist:/data \
+      -v $(pwd)/redis/data/redis.conf:/usr/local/etc/redis/redis.conf \
+      -p 6379:6379 \
+      -h redis_docker@$(hostname) \
+      -dt redis redis-server /usr/local/etc/redis/redis.conf
+  elif [ "$redis_container_status" = "exited" ]; then
+    docker start redis
+  fi
+  docker exec \
+    -e TERM=xterm-256color \
+    -e COLUMNS=$(tput cols) \
+    -e LINES=$(tput lines) \
+    -it redis redis-cli
   ;;
 influxdb*)
   docker exec -it influxdb influx
