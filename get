@@ -157,7 +157,7 @@ grafana*)
       --network tao \
       --restart always \
       -u root \
-      -v $(pwd)/grafana/data/persist:/var/lib/grafana
+      -v $(pwd)/grafana/data/persist:/var/lib/grafana \
       -p 3456:3000 \
       -h grafana_docker@$(hostname) \
       -e "GF_SERVER_ROOT_URL=http://your.domain.name" \
@@ -179,10 +179,10 @@ postgres*)
       --name postgres \
       --network tao \
       --restart always \
-      -v $(pwd)/postgresql/data/persist:/var/lib/postgresql/data
+      -v $(pwd)/postgresql/data/persist:/var/lib/postgresql/data \
       -p 5432:5432 \
       -h postgres_docker@$(hostname) \
-      -e "POSTGRES_PASSWORD=secret"
+      -e "POSTGRES_PASSWORD=secret" \
       -d postgres
   elif [ "$postgres_container_status" = "exited" ]; then
     docker start postgres
