@@ -47,6 +47,7 @@ app*)
       -v $(pwd)/app/data/rustup:/root/.rustup \
       -v $(pwd)/app/data:/root/data \
       -v $(pwd)/ssh:/root/ssh \
+      -p 8088:8088 \
       -h app_tao_docker@$(hostname) \
       -dt tao/app:v1
   elif [ "$tao_app_container_status" = "exited" ]; then
