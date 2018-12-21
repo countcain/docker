@@ -12,4 +12,4 @@ Once the images are built, all cli tools' versions in the images are fixed. But 
 
 # start other containers
 
-* ```docker run -e PASSWORD={pwd} -e SERVER_ADDR={ip} -p8388:8388 -p8388:8388/udp --name shadowsocks -d shadowsocks/shadowsocks-libev```
+* ```docker run -e PASSWORD={pwd} -e SERVER_ADDR=0.0.0.0 -p8388:8388 -p8388:8388/udp --name shadowsocks -d shadowsocks/shadowsocks-libev```
