@@ -18,8 +18,8 @@ if [ -z "$(docker image inspect --format='{{.Id}}' tao/base:v1)" ]; then
 fi
 
 # tao network
-if [ -z "$(docker network inspect --format='{{.Id}}' tao)" ]; then
-  docker network create tao
+if [ -z "$(docker network inspect --format='{{.Id}}' local)" ]; then
+  docker network create local
 fi
 
 case $1 in
@@ -31,7 +31,7 @@ app*)
   if [ -z "$tao_app_container_status" ]; then
     docker run \
       --name tao-app \
-      --network tao \
+      --network local \
       -u root \
       -v $(pwd)/base/tmux.conf:/root/.tmux.conf \
       -v $(pwd)/base/.vim:/root/.vim \
@@ -72,7 +72,7 @@ nginx*)
   if [ -z "$tao_nginx_container_status" ]; then
     docker run \
       --name tao-nginx \
-      --network tao \
+      --network local \
       -u root \
       -v $(pwd)/base/.vim:/root/.vim \
       -v $(pwd)/base/vimrc:/root/.vimrc \
@@ -109,7 +109,7 @@ redis*)
   if [ -z "$redis_container_status" ]; then
     docker run \
       --name redis \
-      --network tao \
+      --network local \
       --restart always \
       -v $(pwd)/redis/data/persist:/data \
       -v $(pwd)/redis/data/redis.conf:/usr/local/etc/redis/redis.conf \
@@ -134,7 +134,7 @@ influxdb*)
   if [ -z "$influxdb_container_status" ]; then
     docker run \
       --name influxdb \
-      --network tao \
+      --network local \
       --restart always \
       -v $(pwd)/influxdb/data/persist:/var/lib/influxdb \
       -v $(pwd)/influxdb/data/influxdb.conf:/etc/influxdb/influxdb.conf \
@@ -156,7 +156,7 @@ grafana*)
   if [ -z "$grafana_container_status" ]; then
     docker run \
       --name grafana \
-      --network tao \
+      --network local \
       --restart always \
       -u root \
       -v $(pwd)/grafana/data/persist:/var/lib/grafana \
@@ -179,7 +179,7 @@ postgres*)
   if [ -z "$postgres_container_status" ]; then
     docker run \
       --name postgres \
-      --network tao \
+      --network local \
       --restart always \
       -v $(pwd)/postgresql/data/persist:/var/lib/postgresql/data \
       -p 5432:5432 \
