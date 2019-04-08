@@ -1,23 +1,6 @@
 #!/usr/bin/env bash
 
-# prezto
-if [ ! -d "$(pwd)/base/.zprezto" ]; then
-  git clone --recursive https://github.com/sorin-ionescu/prezto.git "$(pwd)/base/.zprezto"
-fi
-
-# vundle
-mkdir -p "$(pwd)/base/.vim"
-mkdir -p "$(pwd)/base/.vim/bundle"
-if [ ! -d "$(pwd)/base/.vim/bundle/Vundle.vim" ]; then
-  git clone https://github.com/VundleVim/Vundle.vim.git "$(pwd)/base/.vim/bundle/Vundle.vim"
-fi
-
-# base image
-if [ -z "$(docker image inspect --format='{{.Id}}' tao/base:v1)" ]; then
-  docker build -t tao/base:v1 ./base
-fi
-
-# tao network
+# local network
 if [ -z "$(docker network inspect --format='{{.Id}}' local)" ]; then
   docker network create local
 fi
