@@ -101,11 +101,33 @@ postgres*)
     -e LINES=$(tput lines) \
     -it postgres psql -U postgres
   ;;
+mongodb*)
+  mongodb_container_status=$(docker container inspect --format='{{.State.Status}}' mongodb)
+  if [ -z "$mongodb_container_status" ]; then
+    docker run \
+      --name mongodb \
+      --network local \
+      --restart always \
+      -v $(pwd)/mongodb/data/db:/data/db \
+      -v $(pwd)/mongodb/data/mongod.conf:/etc/mongo/mongod.conf \
+      -p 27017:27017 \
+      -h mongodb_docker@$(hostname) \
+      -d mongo --config /etc/mongo/mongod.conf
+  elif [ "$mongodb_container_status" = "exited" ]; then
+    docker start mongodb
+  fi
+  docker exec \
+    -e TERM=xterm-256color \
+    -e COLUMNS=$(tput cols) \
+    -e LINES=$(tput lines) \
+    -it mongodb
+  ;;
 *)
   echo "You must specify a container: $ ./get [option]"
   echo "  redis    - get the redis container"
   echo "  grafana  - get the Grafana container"
   echo "  postgres - get the PostgreSQL container"
   echo "  influxdb - get the InfluxDB container"
+  echo "  mongodb  - get the mongodb container"
   ;;
 esac
