@@ -120,7 +120,7 @@ mongodb*)
     -e TERM=xterm-256color \
     -e COLUMNS=$(tput cols) \
     -e LINES=$(tput lines) \
-    -it mongodb
+    -it mongodb mongo
   ;;
 *)
   echo "You must specify a container: $ ./get [option]"
