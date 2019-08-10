@@ -112,6 +112,8 @@ mongodb*)
       -v $(pwd)/mongodb/data/mongod.conf:/etc/mongo/mongod.conf \
       -p 27017:27017 \
       -h mongodb_docker@$(hostname) \
+      -e "MONGO_INITDB_ROOT_USERNAME=mongoadmin" \
+      -e "MONGO_INITDB_ROOT_PASSWORD=secret" \
       -d mongo --config /etc/mongo/mongod.conf
   elif [ "$mongodb_container_status" = "exited" ]; then
     docker start mongodb
