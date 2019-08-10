@@ -122,7 +122,11 @@ mongodb*)
     -e TERM=xterm-256color \
     -e COLUMNS=$(tput cols) \
     -e LINES=$(tput lines) \
-    -it mongodb mongo
+    -it mongodb mongo \
+      mongo --host mongodb \
+        -u mongoadmin \
+        -p secret \
+        --authenticationDatabase admin  
   ;;
 *)
   echo "You must specify a container: $ ./get [option]"
